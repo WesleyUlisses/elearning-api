@@ -8,11 +8,11 @@ import morgan from 'morgan';
 import compression from 'compression';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@config';
-import { dbConnection } from '@database';
-import { Routes } from '@interfaces/routes.interface';
-import { ErrorMiddleware } from '@middlewares/error.middleware';
-import { logger, stream } from '@utils/logger';
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@/shared/infra/config';
+import { dbConnection } from '@/shared/infra/database';
+import { Routes } from '@/app/interfaces/routes.interface';
+import { ErrorMiddleware } from '@/app/middlewares/error.middleware';
+import { logger, stream } from '@/shared/utils/logger';
 
 export class App {
   public app: express.Application;

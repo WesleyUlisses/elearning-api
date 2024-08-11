@@ -1,9 +1,9 @@
 import { hash } from 'bcrypt';
 import { EntityRepository, Repository } from 'typeorm';
 import { Service } from 'typedi';
-import { UserEntity } from '@entities/users.entity';
+import { UserEntity } from '@/app/entities/users.entity';
 import { HttpException } from '@/exceptions/httpException';
-import { User } from '@interfaces/users.interface';
+import { User } from '@/app/interfaces/users.interface';
 
 @Service()
 @EntityRepository()

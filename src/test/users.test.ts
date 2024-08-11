@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
 import request from 'supertest';
 import { createConnection, getConnection, Repository } from 'typeorm';
-import { App } from '@/app';
-import { dbConnection } from '@database';
-import { CreateUserDto } from '@dtos/users.dto';
-import { UserEntity } from '@entities/users.entity';
-import { UserRoute } from '@routes/users.route';
+import { App } from '@/app/app';
+import { dbConnection } from '@/shared/infra/database';
+import { CreateUserDto } from '@/app/dtos/users.dto';
+import { UserEntity } from '@/app/entities/users.entity';
+import { UserRoute } from '@/app/routes/users.route';
 
 // beforeAll(async () => {
 //   await createConnection(dbConnection);

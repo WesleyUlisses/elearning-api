@@ -2,11 +2,11 @@ import { compare, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { Service } from 'typedi';
 import { EntityRepository, Repository } from 'typeorm';
-import { SECRET_KEY } from '@config';
-import { UserEntity } from '@entities/users.entity';
+import { SECRET_KEY } from '@/shared/infra/config';
+import { UserEntity } from '@/app/entities/users.entity';
 import { HttpException } from '@/exceptions/httpException';
-import { DataStoredInToken, TokenData } from '@interfaces/auth.interface';
-import { User } from '@interfaces/users.interface';
+import { DataStoredInToken, TokenData } from '@/app/interfaces/auth.interface';
+import { User } from '@/app/interfaces/users.interface';
 
 const createToken = (user: User): TokenData => {
   const dataStoredInToken: DataStoredInToken = { id: user.id };
