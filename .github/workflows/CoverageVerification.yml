@@ -1,0 +1,71 @@
+name: Coverage Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          LOG_FORMAT: ${{ secrets.LOG_FORMAT }}
+          LOG_DIR: ${{ secrets.LOG_DIR }}
+          ORIGIN: ${{ secrets.ORIGIN }}
+          CREDENTIALS: ${{ secrets.CREDENTIALS }}
+        run: npm test -- --coverage
+
+      - name: Collect coverage data
+        id: coverage
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json)
+          echo "Lines: $(echo $COVERAGE | jq '.total.lines.pct')%"
+          echo "Branches: $(echo $COVERAGE | jq '.total.branches.pct')%"
+          echo "Functions: $(echo $COVERAGE | jq '.total.functions.pct')%"
+          echo "Statements: $(echo $COVERAGE | jq '.total.statements.pct')%"
+          echo "::set-output name=lines_pct::$(echo $COVERAGE | jq '.total.lines.pct')"
+          echo "::set-output name=branches_pct::$(echo $COVERAGE | jq '.total.branches.pct')"
+          echo "::set-output name=functions_pct::$(echo $COVERAGE | jq '.total.functions.pct')"
+          echo "::set-output name=statements_pct::$(echo $COVERAGE | jq '.total.statements.pct')"
+
+      - name: Post coverage result to PR
+        if: steps.coverage.outputs.lines_pct < 80
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## Test Coverage Report
+            | Metric | Percentage |
+            |--------|------------|
+            | Lines  | ${{ steps.coverage.outputs.lines_pct }}% |
+            | Branches | ${{ steps.coverage.outputs.branches_pct }}% |
+            | Functions | ${{ steps.coverage.outputs.functions_pct }}% |
+            | Statements | ${{ steps.coverage.outputs.statements_pct }}% |
+
+            **Warning:** Code coverage is below the minimum threshold of 80%.
