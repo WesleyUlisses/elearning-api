@@ -13,6 +13,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageReporters: ['json', 'lcov', 'text', 'clover'],
   collectCoverageFrom: ['src/**/*.ts'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/src/app/middlewares/', '/src/test/', '.vscode', 'coverage'],
   coverageThreshold: {
     global: {
       branches: 80,
